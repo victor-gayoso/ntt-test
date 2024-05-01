@@ -11,7 +11,7 @@ import java.util.Random;
 public class NTTPerformanceTest
 {
 
-    long N = 2048;
+    long N = 8;
     long Q = 12289;
     long OMEGA = 0;
     long OMEGA_INV = 0;
@@ -28,7 +28,7 @@ public class NTTPerformanceTest
     long[] laPotenciasPhi;
     long[] laPotenciasPhiInv;  
     
-    boolean negacyclic = true;
+    boolean negacyclic = false;
     boolean debug = true; 
     
     long start, stop, timeElapsedNTTPlain=0, timeElapsedNTTRecursive=0, timeElapsedDirect=0, timeElapsedNTTPlainInit=0, timeElapsedNTTRecursiveInit = 0;
@@ -108,7 +108,7 @@ public class NTTPerformanceTest
         }
         else
         {
-            System.out.println("n===== PARAMETERS =====\r\n\r\nN: " + N + "\r\nN_INV: "  + N_INV + "\r\nQ: " + Q + "\r\nOMEGA: " + OMEGA + 
+            System.out.println("===== PARAMETERS =====\r\n\r\nN: " + N + "\r\nN_INV: "  + N_INV + "\r\nQ: " + Q + "\r\nOMEGA: " + OMEGA + 
                       "\r\nOMEGA_INV: " + OMEGA_INV  + "\r\nx^(N-1)\r\n");
         }         
         
@@ -134,8 +134,8 @@ public class NTTPerformanceTest
             
             if(debug)
             {
-                System.out.println("----------------------------\r\n");                
-                System.out.println("a[]             : " + Arrays.toString(a));
+                System.out.println("-----------------------------------------------");               
+                System.out.println("Polynomial a(x):                 " + Arrays.toString(a));
             }             
             
             for(int i=0; i<N; i++)
@@ -145,7 +145,7 @@ public class NTTPerformanceTest
             
             if(debug)
             {
-                System.out.println("b[]             : " + Arrays.toString(b));         
+                System.out.println("Polynomial b(x):                 " + Arrays.toString(b));         
             }
             
             
@@ -174,11 +174,11 @@ public class NTTPerformanceTest
             {
                 if(negacyclic)
                 {
-                    System.out.println("aTrans[]        : " + Arrays.toString(aTrans));            
+                    System.out.println("Negacyclic NTT(a(x)):            " + Arrays.toString(aTrans));            
                 }
                 else
                 {
-                    System.out.println("aTrans[]        : " + Arrays.toString(aTrans));
+                    System.out.println("Regular NTT(a(x)):               " + Arrays.toString(aTrans));
                 }
             }
 
@@ -188,11 +188,11 @@ public class NTTPerformanceTest
             {
                 if(negacyclic)
                 {
-                    System.out.println("bTrans[]        : " + Arrays.toString(bTrans));           
+                    System.out.println("Negacyclic NTT(b(x))):           " + Arrays.toString(bTrans));           
                 }
                 else
                 {
-                    System.out.println("bTrans[]        : " + Arrays.toString(bTrans));
+                    System.out.println("Regular NTT(b(x))):              " + Arrays.toString(bTrans));
                 }
             }
 
@@ -261,17 +261,24 @@ public class NTTPerformanceTest
             
             if(debug)
             {
-                System.out.println("mulTrans[]      : " + Arrays.toString(mulTrans)); 
-                System.out.println("mulDirect[]     : " + Arrays.toString(mulDirect)); 
-                System.out.println("mulNTT[]        : " + Arrays.toString(mul)); 
-                System.out.println("mulNTTrecursive : " + Arrays.toString(mulNTTrecursive));
-                System.out.println("\r\n----------------------------");
+                if(negacyclic)
+                {
+                    System.out.println("Negacyclic NTT(a(x)·b(x)):       " + Arrays.toString(mulTrans));
+                } 
+                else
+                {
+                    System.out.println("Regular NTT(a(x)·b(x)):          " + Arrays.toString(mulTrans));
+                }
+                System.out.println("Direct multiplication a(x)·b(x): " + Arrays.toString(mulDirect)); 
+                System.out.println("Plain NTT a(x)·b(x):             " + Arrays.toString(mul)); 
+                System.out.println("Recursive NTT a(x)·b(x):         " + Arrays.toString(mulNTTrecursive));
+                System.out.println("-----------------------------------------------");  
 
                 for(int i=0; i<(int)N; i++)
                 {
                     if(mul[i]!=mulDirect[i])
                     {
-                        System.out.println("ERROR: matrices do not match!!!!!!!!!!!!!!!");
+                        System.out.println("ERROR: matrices do not match!!!");
                         return;
                     }
                 }
@@ -279,25 +286,28 @@ public class NTTPerformanceTest
         }
         
         System.out.println("END OF COMPUTATION: " + iterations + " iteration/s completed\r\n");
+
+        System.out.println("Timing values provided in nanoseconds\r\n");
         
-        System.out.println("Time NTT Plain Init:             " + (timeElapsedNTTPlainInit));
-        System.out.println("Time NTT Recursive Init:         " + (timeElapsedNTTRecursiveInit));        
-        System.out.println("Total time Direct:               " + timeElapsedDirect);        
-        System.out.println("Total time NTT Plain:            " + timeElapsedNTTPlain);
-        System.out.println("Total time NTT Recursive:        " + timeElapsedNTTRecursive);
+        System.out.println("-----------------------------------------------");        
+        System.out.println("Time NTT Plain Init:              " + (timeElapsedNTTPlainInit));
+        System.out.println("Time NTT Recursive Init:          " + (timeElapsedNTTRecursiveInit));        
+        System.out.println("Total time Direct:                " + timeElapsedDirect);        
+        System.out.println("Total time NTT Plain:             " + timeElapsedNTTPlain);
+        System.out.println("Total time NTT Recursive:         " + timeElapsedNTTRecursive);
         System.out.println("-----------------------------------------------");
-        System.out.println("Mean time Direct:               " + (timeElapsedDirect/iterations));
-        System.out.println("Mean time NTT Plain:            " + (timeElapsedNTTPlain/iterations));
-        System.out.println("Mean time NTT Recursive:        " + (timeElapsedNTTRecursive/iterations));
+        System.out.println("Mean time Direct:                 " + (timeElapsedDirect/iterations));
+        System.out.println("Mean time NTT Plain:              " + (timeElapsedNTTPlain/iterations));
+        System.out.println("Mean time NTT Recursive:          " + (timeElapsedNTTRecursive/iterations));
         System.out.println("-----------------------------------------------");
-        System.out.println("Mean time Direct:               " + (timeElapsedDirect/iterations));
-        System.out.println("Mean time NTT Plain + Init:     " + ((timeElapsedNTTPlainInit+timeElapsedNTTPlain)/iterations));
-        System.out.println("Mean time NTT Recursive + Init: " + ((timeElapsedNTTRecursiveInit+timeElapsedNTTRecursive)/iterations));
+        System.out.println("Mean time Direct:                 " + (timeElapsedDirect/iterations));
+        System.out.println("Mean time NTT Plain + Init:       " + ((timeElapsedNTTPlainInit+timeElapsedNTTPlain)/iterations));
+        System.out.println("Mean time NTT Recursive + Init:   " + ((timeElapsedNTTRecursiveInit+timeElapsedNTTRecursive)/iterations));
         System.out.println("-----------------------------------------------");
         System.out.println("Mean time Direct:                 " + (timeElapsedDirect/iterations));
         System.out.println("Mean time 1 NTT Plain + Init:     " + (timeElapsedNTTPlainInit+(timeElapsedNTTPlain/iterations)));
         System.out.println("Mean time 1 NTT Recursive + Init: " + (timeElapsedNTTRecursiveInit+(timeElapsedNTTRecursive/iterations)));
-
+        System.out.println("-----------------------------------------------");
     }
     
     
