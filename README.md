@@ -16,7 +16,7 @@ java -jar NTTPerformanceTest.jar [+|-] [N] [I]
 
 The variable "debug" allows to print out the content of all the polynomials involved in the calculations.  
 
-A sample output is the following:
+A sample output for the input "java -jar NTTPerformanceTest.jar - 8 1" is the following:
 
 
 ===== PARAMETERS =====
