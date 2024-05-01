@@ -1,2 +1,3 @@
-# ntt-test
-Test application for NTT-related algorithms
+# NTT performance test
+
+This is a test application for NTT-related algorithms.
